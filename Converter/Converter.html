@@ -1,0 +1,92 @@
+<head>
+<title>bitluni's POV lightsaber</title>
+<script>
+function addFile(file)
+{    
+  var reader = new FileReader();
+  reader.onload = function()
+  {
+    var img = document.createElement('img');
+    img.onload = function()
+    {
+      var ctx = document.querySelector('canvas').getContext('2d');
+      var s = (img.width > img.height) ? 128.0 / img.width : 128.0 / img.height;
+      var tx = Math.floor(img.width * s);
+      var ty = Math.floor(img.height * s);
+      img.width;
+      img.height;
+      ctx.drawImage(img, 0, 0, 1, 1, 0, 0, 128, 128);
+      ctx.drawImage(img, 0, 0, img.width, img.height, (128 - tx) / 2, (128 - ty) / 2, tx, ty);
+      var data = ctx.getImageData(0, 0, 128, 128).data;
+      var a = new Uint8Array(128 * 128 * 3);
+      for(var i = 0; i < 128 * 128; i++)
+      {
+        a[i * 3] = data[i * 4];
+        a[i * 3 + 1] = data[i * 4 + 1];
+        a[i * 3 + 2] = data[i * 4 + 2];
+      }
+		document.getElementById("filearea").innerHTML = "";
+		var fileArea = document.getElementById("filearea");
+		var file = document.createElement("a");
+		file.className = "block file";
+		file.download = file.innerHTML = "image0.bin";
+		file.href = URL.createObjectURL(new Blob([a]));
+		fileArea.appendChild(file);
+
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function addFiles(event)
+{
+  for(var i = 0; i < event.target.files.length; i++)
+  {
+    var file = event.target.files[i];
+    addFile(file);
+  }
+  event.target.value = '';
+}
+
+function loadFile()
+{
+  document.getElementById("addimage").click()
+}
+
+
+</script>
+<style>
+  .menu
+  {
+    background-color: #eeeeee;
+    padding: 1px;
+    display: block;
+    margin: 3px;
+    padding: 5px;
+    border-radius: 3px;   
+  }
+  h2
+  {
+    color: white;
+    background: #800000;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body style='font-family: arial'>
+<h2>bitluni's POV lightsaber</h2>
+<div style="max-width: 300px">
+  <div class='menu'>
+      <button onclick='loadFile()'>Select Image &#x1F4C2;</button> 
+      <input id='addimage' type='file' onchange='addFiles(event)' accept='image/*' hidden>
+  </div>
+	<div id="filearea">
+	</div>
+  <canvas width='128' height='128'></canvas>
+</div>
+</body></html>
+
+
